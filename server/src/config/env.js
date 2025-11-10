@@ -16,7 +16,7 @@ const env = {
   node: process.env.NODE_ENV || 'development',
   port: process.env.PORT || 5000,
   mongoUri: process.env.MONGO_URI || 'mongodb://localhost:27017/hms',
-  frontendUrl: process.env.FRONTEND_URL || 'http://localhost:5173',
+  frontendUrl: (process.env.FRONTEND_URL || 'http://localhost:5173').split(',')[0].trim(),
   appName: process.env.APP_NAME || 'HMS',
   supportEmail: process.env.SUPPORT_EMAIL,
   jwt: {
