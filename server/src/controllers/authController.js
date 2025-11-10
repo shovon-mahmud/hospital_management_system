@@ -116,7 +116,10 @@ export const register = async (req, res, next) => {
 
     const verifyUrl = `${env.frontendUrl.replace(/\/$/, '')}/verify-email?token=${verifyToken}`;
     const { html, text } = verifyEmailTemplate({ name, verifyUrl, expiresInHours: 24 });
-    await sendMail({ to: email, subject: 'Verify your HMS account', html, text });
+    
+    // Send email without blocking (best-effort)
+    sendMail({ to: email, subject: 'Verify your HMS account', html, text })
+      .catch(err => console.error('Failed to send verification email:', err));
 
     // Auto-issue tokens (login is still blocked if unverified)
     const populated = await User.findById(user._id).populate('role');
@@ -267,11 +270,13 @@ export const verifyEmail = async (req, res, next) => {
     user.verificationCodeExpiry = undefined;
     await user.save();
 
+    // Send welcome email (best-effort, non-blocking)
     try {
       const dashboardUrl = `${env.frontendUrl.replace(/\/$/, '')}/`;
       const { html, text } = welcomeEmailTemplate({ name: user.name, role: user.role?.name, appName: env.appName, dashboardUrl });
-      await sendMail({ to: user.email, subject: `Welcome to ${env.appName}!`, html, text });
-    } catch (e) { console.error('Welcome email failed:', e); }
+      sendMail({ to: user.email, subject: `Welcome to ${env.appName}!`, html, text })
+        .catch(err => console.error('Welcome email failed:', err));
+    } catch (e) { /* ignore template errors */ }
 
     ok(res, null, 'Email verified successfully');
   } catch (e) { next(e); }
@@ -296,7 +301,11 @@ export const resendVerificationCode = async (req, res, next) => {
 
     const verifyUrl = `${env.frontendUrl.replace(/\/$/, '')}/verify-email?token=${verifyToken}`;
     const { html, text } = verifyEmailTemplate({ name: user.name, verifyUrl, expiresInHours: 24 });
-    await sendMail({ to: user.email, subject: 'Verify your HMS account', html, text });
+    
+    // Send email without blocking
+    sendMail({ to: user.email, subject: 'Verify your HMS account', html, text })
+      .catch(err => console.error('Failed to send verification email:', err));
+      
     ok(res, { email: user.email, expiresInHours: 24 }, 'Verification link resent');
   } catch (e) { next(e); }
 };
@@ -307,7 +316,11 @@ export const requestPasswordReset = async (req, res, next) => {
     const user = await User.findOne({ email });
     if (!user) return ok(res, null, 'If the email exists, a reset link was sent');
     const token = jwt.sign({ sub: user._id, type: 'reset' }, env.jwt.accessSecret, { expiresIn: '15m' });
-    await sendMail({ to: email, subject: 'Reset your HMS password', html: `<p>Reset: <a href="#">${token}</a></p>` });
+    
+    // Send email without blocking
+    sendMail({ to: email, subject: 'Reset your HMS password', html: `<p>Reset: <a href="#">${token}</a></p>` })
+      .catch(err => console.error('Failed to send password reset email:', err));
+      
     ok(res, null, 'Reset email sent');
   } catch (e) { next(e); }
 };
