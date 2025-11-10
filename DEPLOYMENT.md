@@ -52,12 +52,12 @@ APP_NAME=Airelus Hospital Ltd
 ### 1.3 Deploy Backend
 1. Click **"Create Web Service"**
 2. Wait for deployment (3-5 minutes)
-3. Note your backend URL: `https://airelus-hms-backend.onrender.com`
+3. Note your backend URL: `https://hospital-management-system-server-x4wl.onrender.com`
 
 ### 1.4 Test Backend
 Visit these URLs to verify:
-- `https://airelus-hms-backend.onrender.com/` → Should show: `{"success":true,"message":"Server is running!"}`
-- `https://airelus-hms-backend.onrender.com/api/health` → Should show: `{"success":true,"message":"OK"}`
+- `https://hospital-management-system-server-x4wl.onrender.com/` → Should show: `{"success":true,"message":"Server is running!"}`
+- `https://hospital-management-system-server-x4wl.onrender.com/api/health` → Should show: `{"success":true,"message":"OK"}`
 
 ---
 
@@ -67,7 +67,7 @@ Visit these URLs to verify:
 1. In your local project, edit `client/.env.production`
 2. Replace with your actual Render backend URL:
    ```bash
-   VITE_API_URL=https://airelus-hms-backend.onrender.com/api
+   VITE_API_URL=https://hospital-management-system-server-x4wl.onrender.com/api
    ```
 
 ### 2.2 Commit and Push
@@ -91,7 +91,7 @@ git push origin main
 **Environment Variables:**
 Add this in Vercel:
 - **Name**: `VITE_API_URL`
-- **Value**: `https://airelus-hms-backend.onrender.com/api`
+- **Value**: `https://hospital-management-system-server-x4wl.onrender.com/api`
 
 5. Click **"Deploy"**
 6. Wait for deployment (2-3 minutes)
@@ -136,7 +136,7 @@ After updating environment variables, Render will automatically redeploy. Wait 2
 
 **CORS Error:**
 ```
-Access to XMLHttpRequest at 'https://airelus-hms-backend.onrender.com/api/...' 
+Access to XMLHttpRequest at 'https://hospital-management-system-server-x4wl.onrender.com/api/...' 
 from origin 'https://your-project.vercel.app' has been blocked by CORS policy
 ```
 **Fix:** Verify `CORS_ORIGINS` in Render includes your exact Vercel URL (no trailing slash)
@@ -146,7 +146,7 @@ from origin 'https://your-project.vercel.app' has been blocked by CORS policy
 Network Error / ERR_CONNECTION_REFUSED
 ```
 **Fix:** 
-1. Check backend is running: Visit `https://airelus-hms-backend.onrender.com/`
+1. Check backend is running: Visit `https://hospital-management-system-server-x4wl.onrender.com/`
 2. Verify `VITE_API_URL` in Vercel environment variables
 3. Redeploy frontend on Vercel after changing env vars
 
