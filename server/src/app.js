@@ -28,6 +28,8 @@ const swaggerSpec = swaggerJsdoc({
 });
 app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
+// Root health check
+app.get('/', (_req, res) => res.json({ success: true, message: 'Server is running!' }));
 app.get('/api/health', (_req, res) => res.json({ success: true, message: 'OK' }));
 app.use('/api', router);
 

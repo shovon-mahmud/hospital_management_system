@@ -8,11 +8,6 @@ const server = http.createServer(app);
 const io = new SocketIOServer(server, { cors: { origin: env.corsOrigins, credentials: true } });
 app.set('io', io);
 
-// Health/test root route
-app.get('/', (req, res) => {
-  res.json({ success: true, message: 'Server is running!' });
-});
-
 io.on('connection', (socket) => {
   console.log('Socket connected', socket.id);
   socket.on('user:join', (userId) => {
