@@ -48,11 +48,12 @@ const authSlice = createSlice({
       })
       .addCase(register.pending, (state) => { state.status = 'loading'; state.error = null })
       .addCase(register.fulfilled, (state, action) => {
+        // Do NOT auto-login after registration - user must verify email first
         state.status = 'succeeded'
-        state.user = action.payload.user
-        state.accessToken = action.payload.accessToken
-        state.refreshToken = action.payload.refreshToken
-        localStorage.setItem('hms_auth', JSON.stringify(action.payload))
+        state.user = null
+        state.accessToken = null
+        state.refreshToken = null
+        // Note: Tokens returned from backend but not stored until email verified
       })
       .addCase(register.rejected, (state, action) => {
         state.status = 'failed'

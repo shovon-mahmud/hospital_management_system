@@ -121,18 +121,11 @@ export const register = async (req, res, next) => {
     sendMail({ to: email, subject: 'Verify your HMS account', html, text })
       .catch(err => console.error('Failed to send verification email:', err));
 
-    // Auto-issue tokens (login is still blocked if unverified)
-    const populated = await User.findById(user._id).populate('role');
-    const accessToken = signAccess(populated);
-    const refreshToken = signRefresh(populated);
-    populated.refreshTokens.push({ token: refreshToken });
-    await populated.save();
-
+    // Return success WITHOUT tokens - user must verify email before logging in
     ok(res, {
-      accessToken,
-      refreshToken,
-      user: { id: populated._id, name: populated.name, email: populated.email, role: populated.role.name }
-    }, 'Registered');
+      user: { id: user._id, name: user.name, email: user.email, role: role.name },
+      requiresVerification: true
+    }, 'Registration successful. Please check your email to verify your account.');
   } catch (e) { next(e); }
 };
 
